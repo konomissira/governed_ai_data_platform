@@ -13,7 +13,7 @@ venv/
 env/
 ENV/
 
-# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimised / DLL files
 pycache/
 *.py[cod]
 *$py.class
