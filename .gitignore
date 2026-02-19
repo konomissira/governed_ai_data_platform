@@ -45,5 +45,5 @@ Thumbs.db
 .idea/
 *.swp
 
-# Docker (Optional local overrides)
+# Docker
 docker-compose.override.yml
