@@ -1,0 +1,48 @@
+version: 2
+
+sources:
+    - name: bronze_sap_raw
+      description: "Raw SAP data ingested into BigQuery via the Python data generation pipeline (Branch 1)."
+      database: governed-ai-data-platform
+      schema: bronze_sap_raw
+
+      tables:
+          - name: raw_sap_vbak
+            description: "SAP Sales Document Header table (VBAK). One row per sales order."
+            columns:
+                - name: MANDT
+                  description: "Client ID — SAP mandant (always 100 in our case)."
+                - name: VBELN
+                  description: "Sales Document Number — unique identifier for each sales order."
+                - name: ERDAT
+                  description: "Creation date of the sales order."
+                - name: ERNAM
+                  description: "Username of the person/process that created the order."
+                - name: VKORG
+                  description: "Sales Organisation (e.g. GB01, US01, DE01)."
+                - name: VTWEG
+                  description: "Distribution Channel (e.g. 10, 20)."
+                - name: NETWR
+                  description: "Net value of the sales order in the document currency."
+                - name: WAERK
+                  description: "Currency key (e.g. GBP)."
+                - name: KUNNR
+                  description: "Customer ID — references the sold-to customer."
+
+          - name: raw_sap_vbap
+            description: "SAP Sales Document Item table (VBAP). One row per line item within a sales order."
+            columns:
+                - name: MANDT
+                  description: "Client ID — SAP mandant."
+                - name: VBELN
+                  description: "Sales Document Number — foreign key to VBAK."
+                - name: POSNR
+                  description: "Item number within the sales order (10, 20, 30...)."
+                - name: MATNR
+                  description: "Material Number — the product being ordered."
+                - name: KWMENG
+                  description: "Order quantity."
+                - name: VRKME
+                  description: "Unit of measure (EA = Each)."
+                - name: NETPR
+                  description: "Net price per unit of the item."

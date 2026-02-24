@@ -1,0 +1,34 @@
+# Name of your project
+name: "cortex_semantic_layer"
+version: "1.0.0"
+config-version: 2
+
+# This tells dbt where your models (SQL files) will live
+profile: "cortex_bigquery"
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+    - "target"
+    - "dbt_packages"
+
+# Defining the materialisation strategy (Medallion Architecture)
+models:
+    cortex_semantic_layer:
+        # Bronze: Raw data (already in BigQuery, we just reference it)
+        bronze:
+            +materialized: ephemeral
+
+        # Silver: Cleaned up SAP tables (Views are cheaper/faster for this)
+        silver:
+            +materialized: view
+            +schema: silver
+
+        # Gold: Business-ready aggregations for the AI (Tables for fast querying)
+        gold:
+            +materialized: table
+            +schema: gold
