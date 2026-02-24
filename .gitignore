@@ -19,6 +19,9 @@ pycache/
 *.py[cod]
 *$py.class
 
+*.pyc
+*.pyo
+
 # Pytest / Coverage
 .pytest_cache/
 .coverage
@@ -48,3 +51,11 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
+
+# dbt profiles - contains credentials and project details
+dbt_cortex_project/profiles.yml
+
+# dbt generated folders
+dbt_cortex_project/target/
+dbt_cortex_project/dbt_packages/
+dbt_cortex_project/logs/

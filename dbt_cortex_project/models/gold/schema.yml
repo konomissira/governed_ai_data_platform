@@ -1,0 +1,113 @@
+version: 2
+
+models:
+    - name: fct_sales_orders
+      description: >
+          Business-ready sales order fact table (Gold Layer). Joins SAP VBAK header
+          data with aggregated VBAP item metrics. Materialised as a BigQuery table
+          for fast querying by Vertex AI and business reporting tools.
+          One row per sales order.
+
+      columns:
+          # --- Keys & Identifiers ---
+          - name: sales_order_number
+            description: "Unique sales order identifier — sourced from SAP VBELN."
+            tests:
+                - not_null
+                - unique
+
+          - name: client_id
+            description: "SAP client/mandant ID."
+            tests:
+                - not_null
+
+          - name: customer_id
+            description: "Customer identifier — sourced from SAP KUNNR."
+            tests:
+                - not_null
+
+          # --- Organisation ---
+          - name: sales_org
+            description: "Sales organisation code (e.g. GB01, US01, DE01)."
+            tests:
+                - not_null
+                - accepted_values:
+                      values: ["GB01", "US01", "DE01"]
+
+          - name: distribution_channel
+            description: "Distribution channel code (e.g. 10, 20)."
+            tests:
+                - not_null
+                - accepted_values:
+                      values: ["10", "20"]
+
+          # --- Dates ---
+          - name: created_at
+            description: "Full timestamp of when the sales order was created in SAP."
+            tests:
+                - not_null
+
+          - name: created_date
+            description: "Date portion of the order creation timestamp."
+            tests:
+                - not_null
+
+          - name: created_year
+            description: "Year the order was created — useful for time-series analysis."
+
+          - name: created_month
+            description: "Month the order was created — useful for seasonality analysis."
+
+          # --- Header Financials ---
+          - name: order_net_value
+            description: "Net value of the sales order from the SAP header (NETWR)."
+            tests:
+                - not_null
+
+          - name: currency
+            description: "Currency of the sales order (e.g. GBP)."
+            tests:
+                - not_null
+                - accepted_values:
+                      values: ["GBP", "USD", "EUR"]
+
+          # --- Item Aggregations ---
+          - name: total_line_items
+            description: "Total number of line items within the sales order."
+            tests:
+                - not_null
+
+          - name: total_quantity_ordered
+            description: "Sum of all item quantities across the order."
+            tests:
+                - not_null
+
+          - name: total_items_value
+            description: "Sum of all line item total values (quantity × unit price)."
+            tests:
+                - not_null
+
+          - name: avg_unit_price
+            description: "Average unit price across all line items in the order."
+
+          - name: min_unit_price
+            description: "Lowest unit price among all line items in the order."
+
+          - name: max_unit_price
+            description: "Highest unit price among all line items in the order."
+
+          # --- Derived Metrics ---
+          - name: avg_line_item_value
+            description: "Average value per line item — total items value divided by number of lines."
+
+          - name: avg_revenue_per_unit
+            description: "Average revenue per unit — order net value divided by total quantity ordered."
+
+          # --- Audit ---
+          - name: created_by
+            description: "User or process that created the order in SAP."
+
+          - name: dbt_loaded_at
+            description: "Timestamp of when this record was last loaded by dbt."
+            tests:
+                - not_null
