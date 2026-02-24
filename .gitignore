@@ -6,6 +6,7 @@ key.json
 credentials.json
 gcp-.json
 service-account.json
+*.json
 
 # Virtual environments
 .venv/
