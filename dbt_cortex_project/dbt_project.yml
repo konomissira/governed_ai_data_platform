@@ -1,9 +1,9 @@
-# Name of your project
+# Name of the project
 name: "cortex_semantic_layer"
 version: "1.0.0"
 config-version: 2
 
-# This tells dbt where your models (SQL files) will live
+# This tells dbt where the models (SQL files) will live
 profile: "cortex_bigquery"
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -19,7 +19,7 @@ clean-targets:
 # Defining the materialisation strategy (Medallion Architecture)
 models:
     cortex_semantic_layer:
-        # Bronze: Raw data (already in BigQuery, we just reference it)
+        # Bronze: Raw data (already in BigQuery, just reference it)
         bronze:
             +materialized: ephemeral
 
