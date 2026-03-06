@@ -11,9 +11,9 @@ services:
         env_file:
             - .env
         environment:
-            # We tell the container exactly where to find the key we are mounting
+            # This tell the container exactly where to find the key we are mounting
             - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/gcp-service-account-key.json
-            # We keep our DNS fix for Vertex AI!
+            # This keep our DNS fix for Vertex AI!
             - GRPC_DNS_RESOLVER=native
         volumes:
             # Mount the local key into the container securely (ro = read-only)
