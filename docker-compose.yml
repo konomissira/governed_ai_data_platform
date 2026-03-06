@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+    governed-ai-api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: governed-ai-api
+        ports:
+            - "8000:8000"
+        env_file:
+            - .env
+        environment:
+            # We tell the container exactly where to find the key we are mounting
+            - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/gcp-service-account-key.json
+            # We keep our DNS fix for Vertex AI!
+            - GRPC_DNS_RESOLVER=native
+        volumes:
+            # Mount the local key into the container securely (ro = read-only)
+            - ./gcp-service-account-key.json:/app/credentials/gcp-service-account-key.json:ro
+        restart: unless-stopped
