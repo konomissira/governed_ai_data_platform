@@ -59,3 +59,7 @@ dbt_cortex_project/profiles.yml
 dbt_cortex_project/target/
 dbt_cortex_project/dbt_packages/
 dbt_cortex_project/logs/
+
+# Vite cache
+.vite/
+frontend/.vite/
