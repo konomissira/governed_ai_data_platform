@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+    # 1. The FastAPI Backend
     governed-ai-api:
         build:
             context: .
@@ -11,11 +12,20 @@ services:
         env_file:
             - .env
         environment:
-            # This tell the container exactly where to find the key we are mounting
             - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/gcp-service-account-key.json
-            # This keep our DNS fix for Vertex AI!
             - GRPC_DNS_RESOLVER=native
         volumes:
-            # Mount the local key into the container securely (ro = read-only)
             - ./gcp-service-account-key.json:/app/credentials/gcp-service-account-key.json:ro
+        restart: unless-stopped
+
+    # 2. The React Frontend (Nginx)
+    governed-ai-ui:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        container_name: governed-ai-ui
+        ports:
+            - "80:80" # Just type 'http://localhost' in your browser!
+        depends_on:
+            - governed-ai-api
         restart: unless-stopped
