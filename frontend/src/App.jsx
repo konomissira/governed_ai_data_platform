@@ -24,7 +24,6 @@ export default function App() {
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
-    // Auto-scroll to bottom of chat
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -46,8 +45,8 @@ export default function App() {
         setIsLoading(true);
 
         try {
-            // Connect to the local FastAPI Docker container
-            const response = await fetch("http://localhost:8000/api/ask", {
+            // Relative URL — works in both Docker (via Nginx proxy) and local dev (via Vite proxy)
+            const response = await fetch("/api/ask", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -64,28 +63,17 @@ export default function App() {
                     "Sorry, I encountered an error connecting to the Governed API. Please ensure the backend is running.";
                 setMessages((prev) => [
                     ...prev,
-                    {
-                        role: "ai",
-                        type: "error",
-                        content: errorMessage,
-                    },
+                    { role: "ai", type: "error", content: errorMessage },
                 ]);
                 return;
             }
 
             const data = await response.json();
-
-            // Add the structured AI response to the chat
             setMessages((prev) => [
                 ...prev,
-                {
-                    role: "ai",
-                    type: "data",
-                    content: data,
-                },
+                { role: "ai", type: "data", content: data },
             ]);
         } catch (error) {
-            // Network error - backend not reachable
             setMessages((prev) => [
                 ...prev,
                 {
@@ -100,7 +88,6 @@ export default function App() {
         }
     };
 
-    // Helper to format currency
     const formatCurrency = (amount, currencyCode) => {
         return new Intl.NumberFormat("en-GB", {
             style: "currency",
@@ -109,7 +96,6 @@ export default function App() {
         }).format(amount);
     };
 
-    // Helper to format numbers
     const formatNumber = (num) => {
         return new Intl.NumberFormat("en-GB").format(num);
     };
@@ -201,8 +187,6 @@ export default function App() {
                                                         Intent
                                                     </span>
                                                 </div>
-
-                                                {/* Filter Badges */}
                                                 <div className="flex flex-wrap gap-2">
                                                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs font-medium text-slate-600 shadow-sm">
                                                         <Filter className="w-3 h-3 text-indigo-500" />
@@ -229,7 +213,6 @@ export default function App() {
 
                                             {/* KPI Dashboard Grid */}
                                             <div className="p-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                                {/* Revenue Card */}
                                                 <div className="bg-gradient-to-br from-indigo-50 to-white p-4 rounded-xl border border-indigo-100">
                                                     <div className="flex items-center gap-2 mb-2 text-indigo-800">
                                                         <BarChart3 className="w-4 h-4" />
@@ -247,8 +230,6 @@ export default function App() {
                                                         )}
                                                     </p>
                                                 </div>
-
-                                                {/* Orders Card */}
                                                 <div className="bg-gradient-to-br from-emerald-50 to-white p-4 rounded-xl border border-emerald-100">
                                                     <div className="flex items-center gap-2 mb-2 text-emerald-800">
                                                         <ShoppingCart className="w-4 h-4" />
@@ -263,8 +244,6 @@ export default function App() {
                                                         )}
                                                     </p>
                                                 </div>
-
-                                                {/* Items Sold Card */}
                                                 <div className="bg-gradient-to-br from-sky-50 to-white p-4 rounded-xl border border-sky-100">
                                                     <div className="flex items-center gap-2 mb-2 text-sky-800">
                                                         <Package className="w-4 h-4" />
@@ -281,7 +260,6 @@ export default function App() {
                                                 </div>
                                             </div>
 
-                                            {/* Footer text */}
                                             <div className="bg-slate-50 p-3 text-xs text-slate-400 text-right border-t border-slate-100">
                                                 Governed by dbt constraints •
                                                 Direct BigQuery fetch
