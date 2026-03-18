@@ -174,7 +174,7 @@ GCP_PROJECT_ID=your-actual-gcp-project-id
 Start the entire platform backend and frontend with a single command:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ### 5. Open the Platform
