@@ -74,7 +74,7 @@ app = FastAPI(
 # the FastAPI backend (port 8000) without being blocked by the browser.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "https://ai.kono-dev.co.uk"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
