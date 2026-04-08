@@ -9,7 +9,30 @@ import {
     BarChart3,
     Package,
     ShoppingCart,
+    Sparkles,
 } from "lucide-react";
+
+// Suggested questions — shown when chat is empty
+// Includes one guardrail demo so visitors can see the governance in action
+const SUGGESTED_QUESTIONS = [
+    {
+        label: "Total revenue in GBP",
+        question: "What is our total revenue in GBP?",
+    },
+    { label: "Sales for GB01", question: "Show me sales for GB01" },
+    {
+        label: "Revenue for US01 in USD",
+        question: "What is our revenue for US01 in USD?",
+    },
+    {
+        label: "Total orders for DE01",
+        question: "Show me total orders for DE01",
+    },
+    {
+        label: "🛡️ Test the guardrail",
+        question: "What is the weather in London?",
+    },
+];
 
 export default function App() {
     const [messages, setMessages] = useState([
@@ -22,6 +45,8 @@ export default function App() {
     ]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    // Show suggestions only until the user sends their first message
+    const [showSuggestions, setShowSuggestions] = useState(true);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -32,15 +57,15 @@ export default function App() {
         scrollToBottom();
     }, [messages]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!input.trim()) return;
+    const sendQuestion = async (question) => {
+        if (!question.trim() || isLoading) return;
 
-        const userMessage = input.trim();
+        // Hide suggestions after first interaction
+        setShowSuggestions(false);
         setInput("");
         setMessages((prev) => [
             ...prev,
-            { role: "user", type: "text", content: userMessage },
+            { role: "user", type: "text", content: question },
         ]);
         setIsLoading(true);
 
@@ -52,7 +77,7 @@ export default function App() {
                     "Content-Type": "application/json",
                     Accept: "application/json",
                 },
-                body: JSON.stringify({ question: userMessage }),
+                body: JSON.stringify({ question }),
             });
 
             // Handle guardrail rejection (400) and other API errors gracefully
@@ -88,6 +113,12 @@ export default function App() {
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await sendQuestion(input.trim());
+    };
+
+    // Helper to format currency
     const formatCurrency = (amount, currencyCode) => {
         return new Intl.NumberFormat("en-GB", {
             style: "currency",
@@ -96,6 +127,7 @@ export default function App() {
         }).format(amount);
     };
 
+    // Helper to format numbers
     const formatNumber = (num) => {
         return new Intl.NumberFormat("en-GB").format(num);
     };
@@ -270,6 +302,29 @@ export default function App() {
                             </div>
                         </div>
                     ))}
+
+                    {/* Suggested Questions — visible only before first interaction */}
+                    {showSuggestions && !isLoading && (
+                        <div className="flex flex-col items-start gap-3 mt-2">
+                            <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
+                                <Sparkles className="w-4 h-4 text-indigo-400" />
+                                Try one of these questions:
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {SUGGESTED_QUESTIONS.map((item, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() =>
+                                            sendQuestion(item.question)
+                                        }
+                                        className="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700 transition-colors shadow-sm cursor-pointer"
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Loading Indicator */}
                     {isLoading && (
