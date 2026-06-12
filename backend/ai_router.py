@@ -40,7 +40,7 @@ class IntentRouter:
         Example Unsupported Output: {"sales_org": null, "currency": null, "is_supported_question": false}
         """
 
-        self.model = GenerativeModel("gemini-2.0-flash-001")
+        self.model = GenerativeModel("gemini-2.5-flash-lite")
         self.system_instruction = system_instruction
         logger.info(
             f"Vertex AI IntentRouter initialised — "
